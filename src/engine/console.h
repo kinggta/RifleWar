@@ -19,6 +19,7 @@ public:
 
 		ACCESS_LEVEL_ADMIN=0,
 		ACCESS_LEVEL_MOD,
+		ACCESS_LEVEL_USER,
 
 		TEMPCMD_NAME_LENGTH=32,
 		TEMPCMD_HELP_LENGTH=96,
@@ -41,8 +42,9 @@ public:
 		virtual const char *GetString(unsigned Index) = 0;
 
 		int NumArguments() const { return m_NumArgs; }
-
 		int m_ClientID;
+
+		// DDRace
 
 		virtual int GetVictim() = 0;
 	};
@@ -81,16 +83,18 @@ public:
 	virtual void StoreCommands(bool Store) = 0;
 
 	virtual bool LineIsValid(const char *pStr) = 0;
-	virtual void ExecuteLine(const char *Sptr) = 0;
-	virtual void ExecuteLineFlag(const char *Sptr, int FlasgMask) = 0;
-	virtual void ExecuteLineStroked(int Stroke, const char *pStr) = 0;
-	virtual void ExecuteFile(const char *pFilename) = 0;
+	virtual void ExecuteLine(const char *Sptr, int ClientID = -1) = 0;
+	virtual void ExecuteLineFlag(const char *Sptr, int FlasgMask, int ClientID = -1) = 0;
+	virtual void ExecuteLineStroked(int Stroke, const char *pStr, int ClientID = -1) = 0;
+	virtual void ExecuteFile(const char *pFilename, int ClientID = -1) = 0;
 
 	virtual int RegisterPrintCallback(int OutputLevel, FPrintCallback pfnPrintCallback, void *pUserData) = 0;
 	virtual void SetPrintOutputLevel(int Index, int OutputLevel) = 0;
 	virtual void Print(int Level, const char *pFrom, const char *pStr) = 0;
 
 	virtual void SetAccessLevel(int AccessLevel) = 0;
+	
+	virtual void SetFlagMask(int FlagMask) = 0;
 };
 
 extern IConsole *CreateConsole(int FlagMask);

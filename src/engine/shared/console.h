@@ -19,7 +19,7 @@ class CConsole : public IConsole
 
 		virtual const CCommandInfo *NextCommandInfo(int AccessLevel, int FlagMask) const;
 
-		void SetAccessLevel(int AccessLevel) { m_AccessLevel = clamp(AccessLevel, (int)(ACCESS_LEVEL_ADMIN), (int)(ACCESS_LEVEL_MOD)); }
+		void SetAccessLevel(int AccessLevel) { m_AccessLevel = clamp(AccessLevel, (int)(ACCESS_LEVEL_ADMIN), (int)(ACCESS_LEVEL_USER)); }
 	};
 
 
@@ -60,7 +60,7 @@ class CConsole : public IConsole
 	static void ConModCommandStatus(IConsole::IResult *pResult, void *pUser);
 
 	void ExecuteFileRecurse(const char *pFilename);
-	void ExecuteLineStroked(int Stroke, const char *pStr);
+	void ExecuteLineStroked(int Stroke, const char *pStr, int ClientID = -1);
 
 	struct
 	{
@@ -98,11 +98,12 @@ class CConsole : public IConsole
 			if(this != &Other)
 			{
 				IResult::operator=(Other);
+				int Offset = m_aStringStorage - Other.m_aStringStorage;
 				mem_copy(m_aStringStorage, Other.m_aStringStorage, sizeof(m_aStringStorage));
-				m_pArgsStart = m_aStringStorage+(Other.m_pArgsStart-Other.m_aStringStorage);
-				m_pCommand = m_aStringStorage+(Other.m_pCommand-Other.m_aStringStorage);
+				m_pArgsStart = Other.m_pArgsStart + Offset;
+				m_pCommand = Other.m_pCommand + Offset;
 				for(unsigned i = 0; i < Other.m_NumArgs; ++i)
-					m_apArgs[i] = m_aStringStorage+(Other.m_apArgs[i]-Other.m_aStringStorage);
+					m_apArgs[i] = Other.m_apArgs[i] + Offset;
 			}
 			return *this;
 		}
@@ -115,14 +116,16 @@ class CConsole : public IConsole
 		virtual const char *GetString(unsigned Index);
 		virtual int GetInteger(unsigned Index);
 		virtual float GetFloat(unsigned Index);
-
+		
+		// DDRace
+		
 		enum
 		{
 			VICTIM_NONE=-3,
 			VICTIM_ME=-2,
 			VICTIM_ALL=-1,
 		};
-
+		
 		int m_Victim;
 		void ResetVictim();
 		bool HasVictim();
@@ -184,15 +187,19 @@ public:
 	virtual void StoreCommands(bool Store);
 
 	virtual bool LineIsValid(const char *pStr);
-	virtual void ExecuteLine(const char *pStr);
-	virtual void ExecuteLineFlag(const char *pStr, int FlagMask);
-	virtual void ExecuteFile(const char *pFilename);
+	virtual void ExecuteLine(const char *pStr, int ClientID = -1);
+	virtual void ExecuteLineFlag(const char *pStr, int FlagMask, int ClientID = -1);
+	virtual void ExecuteFile(const char *pFilename, int ClientID = -1);
 
 	virtual int RegisterPrintCallback(int OutputLevel, FPrintCallback pfnPrintCallback, void *pUserData);
 	virtual void SetPrintOutputLevel(int Index, int OutputLevel);
 	virtual void Print(int Level, const char *pFrom, const char *pStr);
+	
+	static void ConUserCommandStatus(IConsole::IResult *pResult, void *pUser);
 
-	void SetAccessLevel(int AccessLevel) { m_AccessLevel = clamp(AccessLevel, (int)(ACCESS_LEVEL_ADMIN), (int)(ACCESS_LEVEL_MOD)); }
+	void SetAccessLevel(int AccessLevel) { m_AccessLevel = clamp(AccessLevel, (int)(ACCESS_LEVEL_ADMIN), (int)(ACCESS_LEVEL_USER)); }
+	
+	void SetFlagMask(int FlagMask) { m_FlagMask = FlagMask; }
 };
 
 #endif

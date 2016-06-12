@@ -177,7 +177,7 @@ public:
 	//int TickSpeed()
 
 	int Init();
-
+	void Logout(int ClientID);
 	void SetRconCID(int ClientID);
 	bool IsAuthed(int ClientID);
 	int GetClientInfo(int ClientID, CClientInfo *pInfo);

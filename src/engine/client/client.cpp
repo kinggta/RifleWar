@@ -2248,6 +2248,9 @@ void CClient::RegisterCommands()
 	m_pConsole->Chain("br_filter_string", ConchainServerBrowserUpdate, this);
 	m_pConsole->Chain("br_filter_gametype", ConchainServerBrowserUpdate, this);
 	m_pConsole->Chain("br_filter_serveraddress", ConchainServerBrowserUpdate, this);
+
+	#define CONSOLE_COMMAND(name, params, flags, callback, userdata, help) m_pConsole->Register(name, params, flags, 0, 0, help);
+	#include <game/fadmin.h>
 }
 
 static CClient *CreateClient()

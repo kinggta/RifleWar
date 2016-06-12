@@ -1470,6 +1470,9 @@ void CGameContext::OnConsoleInit()
 	Console()->Register("vote", "r", CFGFLAG_SERVER, ConVote, this, "Force a vote to yes/no");
 
 	Console()->Chain("sv_motd", ConchainSpecialMotdupdate, this);
+
+	#define CONSOLE_COMMAND(name, params, flags, callback, userdata, help) m_pConsole->Register(name, params, flags, callback, userdata, help);
+	#include "game/fadmin.h"
 }
 
 void CGameContext::OnInit(/*class IKernel *pKernel*/)

@@ -174,6 +174,14 @@ public:
 	virtual const char *GameType();
 	virtual const char *Version();
 	virtual const char *NetVersion();
+
+	private:
+		static void ConLogout(IConsole::IResult *pResult, void *pUserData);
+		static void ConTeleport(IConsole::IResult *pResult, void *pUserData);
+		static void ConUp(IConsole::IResult *pResult, void *pUserData);
+		static void ConDown(IConsole::IResult *pResult, void *pUserData);
+		static void ConLeft(IConsole::IResult *pResult, void *pUserData);
+		static void ConRight(IConsole::IResult *pResult, void *pUserData);
 };
 
 inline int CmaskAll() { return -1; }

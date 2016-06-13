@@ -14,6 +14,10 @@
 #include "gamemodes/ctf.h"
 #include "gamemodes/mod.h"
 
+//RifleWarMods
+#include "gamemodes/rifle.h"
+#include "gamemodes/trifle.h"
+
 enum
 {
 	RESET,
@@ -366,6 +370,7 @@ void CGameContext::CheckPureTuning()
 
 	if(	str_comp(m_pController->m_pGameType, "DM")==0 ||
 		str_comp(m_pController->m_pGameType, "TDM")==0 ||
+		str_comp(m_pController->m_pGameType, "RIFLE")==0 ||
 		str_comp(m_pController->m_pGameType, "CTF")==0)
 	{
 		CTuningParams p;
@@ -1502,6 +1507,10 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 		m_pController = new CGameControllerCTF(this);
 	else if(str_comp(g_Config.m_SvGametype, "tdm") == 0)
 		m_pController = new CGameControllerTDM(this);
+	else if(str_comp(g_Config.m_SvGametype, "rifle") == 0)
+		m_pController = new CGameControllerRIFLE(this);
+	else if(str_comp(g_Config.m_SvGametype, "teamrifle") == 0)
+		m_pController = new CGameControllerTRIFLE(this);
 	else
 		m_pController = new CGameControllerDM(this);
 
